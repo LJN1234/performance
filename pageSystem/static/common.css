@@ -1,0 +1,64 @@
+/* @function rem($val){
+    @return $val/37.5 + rem;
+} */
+
+html,body{width: 100%;height: 100%;}
+#root,.App,.content{height: 100%;}
+#root{min-width:800px;}
+body,p,h1,h2,h3,h4,h5,h6,ul,ol,dl,li,dt,dd{
+    /* 默认有边距，都要清除 */
+    margin: 0;
+    padding: 0;
+    /* 去掉列表的原点 */
+    list-style: none;
+}
+
+/*行内块元素*/
+input,img{
+    margin: 0;
+    padding: 0;
+    border: 0 none;
+    outline-style: none;
+    vertical-align: bottom; 
+}
+ 
+/*行内元素*/
+a,a:active,a:visited{
+    /*下划线和颜色*/
+    text-decoration: none;
+    color: #ccc;
+}
+ 
+a:hover{
+    color:#333;
+}
+ 
+textarea{
+    /* 边框清零 */
+    border:none;
+    /* 轮廓线清零 */
+    outline: none;
+    /* 防止文本域被随意拖拽 */
+    resize: none;
+}
+ 
+i{
+    /*文字样式*/
+    font-style: normal; 
+}
+ 
+/* 使用伪元素清除浮动 */
+.clearfix::before,
+.clearfix::after{
+    content:"";
+    height: 0;
+    line-height: 0;
+    display: block;
+    visibility: none;
+    clear: both;
+}
+ 
+.clearfix {
+    *zoom: 1;
+}
+ 
