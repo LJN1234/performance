@@ -47,7 +47,7 @@ export default {
     },
     created() {
         this.roleTitle = this.$route.query.roleTitle;
-        this.$router.push({path:'/audit/reviewList',query:{roleTitle:this.roleTitle,auditStatus:this.stateList[0].auditStatus}})
+        this.$router.push({path:'/audit/reviewList',query:{roleTitle:this.roleTitle,auditStatus:"未审核"}})
     }
 };
 </script>

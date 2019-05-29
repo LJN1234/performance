@@ -6,8 +6,13 @@
             </el-tag>
         </div>
         <div v-else>
-            已审核完毕！
+            暂无需审核绩效！
         </div>
+
+
+
+
+
     </div>
 </template>
 <script>
@@ -91,6 +96,7 @@ export default {
         },
     created() {
         this.getUserList();
+        // roleTitle=绩效小组审核&auditStatus=未审核
     }
 };
 </script>

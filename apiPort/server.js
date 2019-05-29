@@ -20,13 +20,13 @@ app.use('/',express.static(path.join(__dirname,'../manageSystem')))
     *  api接口：
     *  教师信息接口
     *  绩效描述接口
-    *  教师职位接口
+    *  审核人员接口
     *  教师所填写的绩效信息接口
     *  管理员接口
 */ 
 app.use('/api/userInfo',require('./src/router/userInfo.js'));
 app.use('/api/performanceDesc',require('./src/router/performanceDesc.js'));
-app.use('/api/position',require('./src/router/position.js'));
+app.use('/api/reviewers',require('./src/router/reviewers.js'));
 app.use('/api/performanceData',require('./src/router/performanceData.js'));
 app.use('/api/admin',require('./src/router/admin.js'));
 

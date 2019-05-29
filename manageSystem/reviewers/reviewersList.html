@@ -23,7 +23,7 @@
 <script>DD_belatedPNG.fix('*');</script><![endif]-->
 <!--/meta 作为公共模版分离出去-->
 
-<title>管理员管理</title>
+<title>审核人员信息管理</title>
 </head>
 <body>
 <!--_header 作为公共模版分离出去-->
@@ -80,9 +80,9 @@
             <dt class="selected">人员管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd style="display:block">
                 <ul>
-                    <li><a href="../teacher/teacherList.html" title="教师管理">教师管理</a></li>
-                    <li><a href="../reviewers/reviewersList.html" title="审核人员管理">审核人员管理</a></li>
-                    <li class="current"><a href="admin/adminList.html" title="管理员管理">管理员管理</a></li>
+                    <li><a href="teacherList.html" title="教师管理">教师管理</a></li>
+                    <li class="current"><a href="reviewersList.html" title="审核人员管理">审核人员管理</a></li>
+                    <li><a href="../admin/adminList.html" title="管理员管理">管理员管理</a></li>
                 </ul>
             </dd>
         </dl>
@@ -92,8 +92,7 @@
 <!--/_menu 作为公共模版分离出去-->
 
 <section class="Hui-article-box">
-	<nav class="breadcrumb">
-        <i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 管理员列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"  id="shuaxin" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 审核人员信息管理 <span class="c-gray en">&gt;</span> 审核人员信息列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"  id="shuaxin" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 	<div class="Hui-article">
 		<article class="cl pd-20">
 			<div class="cl pd-5 bg-1 bk-gray mt-20"> 
@@ -104,11 +103,11 @@
                     </a> 
                     <a 
                         class="btn btn-primary radius" 
-                        onclick="admin_add('添加管理员','admin-add.html')"
+                        onclick="reviewers_add('添加审核人员','reviewers-add.html')"
                         href="javascript:;"
                     >
                         <i class="Hui-iconfont">&#xe600;</i> 
-                        添加管理员
+                        添加审核人员
                     </a>
                 </span> 
                 <span class="r">共有数据：<strong id='total'>54</strong> 条</span> </div>
@@ -117,10 +116,12 @@
 					<thead>
 						<tr class="text-c">
 							<th width="30"><input name="" type="checkbox" value=""></th>
-							<th width="110">编号</th>
-							<th width="70">姓名</th>
-                            <th width="40">管理员级别</th>
-							<th width="80">操作</th>
+							<th width="110">教师编号</th>
+							<th width="100">姓名</th>
+                            <th width="150">是否是教研室主任</th>
+                            <th width="150">是否是绩效小组成员</th>
+							<th width="150">是否是学院领导</th>
+							<th width="100">操作</th>
 						</tr>
 					</thead>
 					<tbody id="connect">
@@ -162,84 +163,68 @@ function init(){
 // 接口路径：相对路径
 let rootpath='http://localhost:8000/'
 
-/*管理员-添加*/
-function admin_add(title,url){
-    if($('#adminRose').val() === "超级管理员") {
-        var index = layer.open({
-            type: 2,
-            title: title,
-            content: url
-        });
-        layer.full(index);
-    } else {
-        layer.msg('抱歉，你没有权限进行此操作!',{icon:1,time:1000});
-    }
+/*审核人员-添加*/
+function reviewers_add(title,url){
+	var index = layer.open({
+		type: 2,
+		title: title,
+		content: url
+	});
+	layer.full(index);
 }
 
-/*管理员-编辑*/
-function admin_edit(title,url,id){
-    if($('#adminRose').val() === "超级管理员") {
-        //存储修改的教师编号
-        window.localStorage.setItem('updateAdmin',id)
-        var index = layer.open({
-            type: 2,
-            title: title,
-            content: url,
-            id:id
-        });
-        layer.full(index);
-    } else {
-        layer.msg('抱歉，你没有权限进行此操作!',{icon:1,time:1000});
-    }
+/*审核人员-编辑*/
+function reviewers_edit(title,url,id){
+	//存储修改的审核人员编号
+	window.localStorage.setItem('updateid',id)
+	var index = layer.open({
+		type: 2,
+		title: title,
+		content: url,
+		id:id
+	});
+	layer.full(index);
 }
-/*管理员-删除-一条*/
-function admin_del(obj,id){
-	if($('#adminRose').val() === "超级管理员") {
-        layer.confirm('确认要删除吗？',function(index){
-            $.post(rootpath+'api/admin/deleteAdmin',{userID:id},function(res){
-                if (res.msg==='success') {
-                    $(obj).parents("tr").remove();
-                    layer.msg('已删除!',{icon:1,time:1000});
-                }else{
-                    layer.msg('删除失败!',{icon:1,time:1000});
-                }
-            })
-        },function(index){
-            layer.msg('已取消删除操作!',{icon:1,time:1000});
-        });
-    } else {
-        layer.msg('抱歉，你没有权限进行此操作!',{icon:1,time:1000});
-    }
+/*审核人员-删除-一条*/
+function reviewers_del(obj,id){
+	layer.confirm('确认要删除吗？',function(index){
+        $.post(rootpath+'api/reviewers/deleteReviewer',{_id:id},function(res){
+         	if (res.msg==='success') {
+         		$(obj).parents("tr").remove();
+		        layer.msg('已删除!',{icon:1,time:1000});
+         	}else{
+         		layer.msg('删除失败!',{icon:1,time:1000});
+         	}
+        })	
+	},function(index){
+        layer.msg('已取消删除操作!',{icon:1,time:1000});
+    });
 }
 
-/*管理员-删除-多条*/
+/*审核人员-删除-多条*/
 function batchDelete(){
-    if($('#adminRose').val() === "超级管理员") {
-        var arr=[]; //设置一个空数组，等会被选中的就把id存起来
-        var check = $('#connect .checkBox');
-        layer.confirm('确认要删除吗？',function(index){
-            for(var i = 0; i < check.length; i++) {                    
-                if(check[i].checked == true) { 
-                    var id = $(check[i]).attr('getid');
-                    arr.push(id); 
-                    $(check[i]).parents("tr").remove();          
-                }                
+	var arr=[]; //设置一个空数组，等会被选中的就把id存起来
+    var check = $('#connect .checkBox');
+    layer.confirm('确认要删除吗？',function(index){
+        for(var i = 0; i < check.length; i++) {                    
+			if(check[i].checked == true) { 
+				var id = $(check[i]).attr('getid');
+				arr.push(id); 
+				$(check[i]).parents("tr").remove();          
+			}                
+        }
+        var ids = {ids:arr};
+        let tem=JSON.stringify(ids)
+        $.post(rootpath+'api/reviewers/deleteManyReviewer',{ids:tem},function(res){
+            if (res.msg==='success') {
+                layer.msg('已删除!',{icon:1,time:1000});
+            }else{
+                layer.msg('删除失败!',{icon:1,time:1000});
             }
-            var userIds = {userIds:arr};
-            let tem=JSON.stringify(userIds)
-            $.post(rootpath+'api/admin/deleteManyAdmin',{userIds:tem},function(res){
-                if (res.msg==='success') {
-                    layer.msg('已删除!',{icon:1,time:1000});
-                }else{
-                    layer.msg('删除失败!',{icon:1,time:1000});
-                }
-            })
-        },function(index){
-            layer.msg('已取消删除操作!',{icon:1,time:1000});
-        });
-    } else {
-        layer.msg('抱歉，你没有权限进行此操作!',{icon:1,time:1000});
-    }
+        })	
+	},function(index){
+        layer.msg('已取消删除操作!',{icon:1,time:1000});
+    });
 }
 
 /*页面-刷新*/
@@ -247,10 +232,10 @@ $("#shuaxin").click(function(){
 	location.reload();
 })
 
-// 获取管理员信息数据
-getTeacherList();
-function getTeacherList(){
-	$.get(rootpath+'api/admin/findAdminByAll',function(res){
+// 获取reviewers信息数据
+getReviewersList();
+function getReviewersList(){
+	$.get(rootpath+'api/reviewers/findAll',function(res){
        if(res.msg === 'success') {
         $('#total').html(res.data.length);
         loadingTbody(res.data);
@@ -262,31 +247,20 @@ function getTeacherList(){
 function loadingTbody(data){
 	var allString=''
 	for (var i = 0; i < data.length; i++) {
-        // if($('#adminRose').val() === "超级管理员") {
-            var tr=`
-                <tr class="text-c">
-                    <td><input name="" type="checkbox" class="checkBox" getid="${data[i].userID}"></td>
-                    <td>${data[i].userID}</td>
-                    <td>${data[i].userName}</td>
-                    <td>${data[i].permissions}</td>
-                    <td>
-                        <span class="pointer" style="text-decoration:none" class="ml-5" onClick="admin_edit('修改管理员信息','admin-update.html','${data[i].userID}')" ><i class="Hui-iconfont">&#xe6df;</i></span> 
-                        <span class="pointer" style="text-decoration:none" class="ml-5" onClick="admin_del(this,'${data[i].userID}')"  ><i class="Hui-iconfont">&#xe6e2;</i></span>    
-                    </td>
-                </tr>
-            `
-        // } else {
-        //     var tr=`
-        //         <tr class="text-c">
-        //             <td><input name="" type="checkbox" class="checkBox" getid="${data[i].userID}"></td>
-        //             <td>${data[i].userID}</td>
-        //             <td>${data[i].userName}</td>
-        //             <td>${data[i].permissions}</td>
-        //             <td></td>
-        //         </tr>
-        //     `
-        // }
-	    	 
+	    var tr=`
+            <tr class="text-c">
+                <td><input name="" type="checkbox" class="checkBox" getid="${data[i]._id}"></td>
+                <td>${data[i].userID}</td>
+                <td>${data[i].userName}</td>
+                <td>${data[i].chairman}</td>
+                <td>${data[i].performanceTeam}</td>
+                <td>${data[i].leadership}</td>
+                <td>
+                    <span class="pointer" style="text-decoration:none" class="ml-5" onClick="reviewers_edit('修改审核人员信息','reviewers-update.html','${data[i]._id}')" ><i class="Hui-iconfont">&#xe6df;</i></span> 
+                    <span class="pointer" style="text-decoration:none" class="ml-5" onClick="reviewers_del(this,'${data[i]._id}')"  ><i class="Hui-iconfont">&#xe6e2;</i></span>    
+                </td>
+		    </tr>
+	    `	 
 	  allString+=tr
 	}
   $('#connect').html(allString)

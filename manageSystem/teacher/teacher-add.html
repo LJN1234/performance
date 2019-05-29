@@ -299,7 +299,7 @@ $(function(){
     //添加教师操作
     function addTeacher(){
         var teacherInfo = {
-            userID: window.localStorage.getItem('updateid'),
+            userID: $('#userID').val(),
             userName: $('#userName').val(),
             userPass: $('#userPass').val(), 
             department: $('#department').val(), 

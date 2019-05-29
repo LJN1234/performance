@@ -100,6 +100,9 @@
                                     });
                                 // 登录成功
                                 } else {
+                                    // this.$store.commit("changeLogin", true);
+                                    // this.$store.dispatch("userLogin", true);
+                                    window.localStorage.setItem("isLogin",true);
                                     this.$message({
                                         showClose: true,
                                         message: '登录成功，正在跳转首页',
@@ -107,20 +110,13 @@
                                         duration:1000,
                                         onClose:()=>{
                                             // 登录成功后跳转到指定页面
-                                            // if (this.radioRole === '教师') {
-                                                // this.$axios.get("/myapi/api/userInfo/findById", {params:{id:this.userName}})
-                                                // .then(data => {
-                                                    let user = {};
-                                                    user.loginStatus = true;
-                                                    user.userID = data.data.data[0].userID;
-                                                    user.userName = data.data.data[0].userName;
-                                                    user.department = data.data.data[0].department;
-                                                    window.localStorage.setItem('user',JSON.stringify(user));
-                                                    this.$router.push({path:'/home'})
-                                                // })
-                                            // } else {
-                                            //     this.$router.push({path:'/retrievePass',query:{userName:this.userName} })
-                                            // }
+                                            let user = {};
+                                            user.loginStatus = true;
+                                            user.userID = data.data.data[0].userID;
+                                            user.userName = data.data.data[0].userName;
+                                            user.department = data.data.data[0].department;
+                                            window.localStorage.setItem('user',JSON.stringify(user));
+                                            this.$router.push({path:'/home'})
                                         }
                                     });
                                 }

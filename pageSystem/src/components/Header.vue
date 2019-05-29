@@ -9,7 +9,7 @@
             <div class="header-userInfo">
                 <el-dropdown trigger="click" @command="handleCommand">
                     <span class="el-dropdown-link">
-                        <span>欢迎您，{{loginUser}}</span>
+                        <span>欢迎您，{{loginUser.userName}}</span>
                         <i class="el-icon-arrow-down el-icon--right"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
@@ -36,17 +36,18 @@
         methods: {
             handleCommand(info) {
                 if (info.title === "退出登录") {
-                    this.$router.push({ path: info.path });
                     window.localStorage.setItem('user','');
+                    window.localStorage.setItem("isLogin",false);
                     this.loginUser = '';
+                    this.$router.push({ path: info.path });
                 } else {
                     this.$router.push({path: info.path, query: {roleTitle: info.title}});
                 }
             }
         },
         created () {
-            this.loginUser = JSON.parse(window.localStorage.getItem('user')).userName;
-            this.$axios.get("/myapi/api/position/findByUserID?t="+ (new Date()).getTime().toString(),{params:{userName:this.loginUser}})
+            this.loginUser = JSON.parse(window.localStorage.getItem('user'));
+            this.$axios.get("/myapi/api/reviewers/findByUserID?t="+ (new Date()).getTime().toString(),{params:{userID:this.loginUser.userID}})
             .then(data => {
                 if (data.data.data[0].leadership !== '否') {
                     this.auditPagesList.splice(2,0,{ title: "领导审核", path: "/audit" },)

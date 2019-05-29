@@ -1,0 +1,168 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="Bookmark" href="../favicon.ico" >
+<link rel="Shortcut Icon" href="../favicon.ico" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/1.0.8/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../static/h-ui.admin/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script><![endif]-->
+<!--/meta 作为公共模版分离出去-->
+
+<title>修改审核人员信息</title>
+<link href="../lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+	#tmpimg{
+		width: 200px;
+	}
+</style>
+</head>
+<body>
+<div class="page-container">
+    <div class="form form-horizontal" id="form-article-add">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>教师编号：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="" id="userID" name="">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>姓名：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="" id="userName" name="">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>是否是教研室主任：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select name="" class="select" id='chairman'>
+                        <option value="请选择" disabled selected>请选择</option>
+                        <option value="否">否</option>
+                        <option value="教研室主任">教研室主任</option>
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">是否是绩效小组成员：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                <select name="" class="select" id='performanceTeam'>
+                    <option value="请选择" disabled selected>请选择</option>
+                    <option value="否">否</option>
+                    <option value="绩效小组成员">绩效小组成员</option>
+                </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">是否是学院领导：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                <select name="" class="select" id='leadership'>
+                    <option value="请选择" disabled selected>请选择</option>
+                    <option value="否">否</option>
+                    <option value="学院领导">学院领导</option>
+                </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                <button id="addbtn" class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 提交</button>
+                <button onClick="layer_close();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/1.9.1/jquery.min.js"></script> 
+<script type="text/javascript" src="../lib/layer/2.4/layer.js"></script> 
+<script type="text/javascript" src="../lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
+<script type="text/javascript" src="../lib/jquery.validation/1.14.0/validate-methods.js"></script> 
+<script type="text/javascript" src="../lib/jquery.validation/1.14.0/messages_zh.js"></script> 
+<script type="text/javascript" src="../static/h-ui/js/H-ui.js"></script> 
+<script type="text/javascript" src="../static/h-ui.admin/js/H-ui.admin.page.js"></script> 
+
+<!--/_footer /作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../lib/webuploader/0.1.5/webuploader.min.js"></script> 
+<script type="text/javascript">
+$(function(){
+
+    // 初始化
+    init();
+    var adminInfo;
+    function init(){
+        if(!window.sessionStorage.getItem("loginStatus")){
+            layer.msg('身份验证失败，请重新登录',{time:1000});
+            location.href='../login.html'
+        }
+
+    }
+
+    let OL_Action_Root="http://localhost:8000"
+    //获取当前教师相关信息
+    getInfoById();
+    function getInfoById(){
+        //获取id
+        var id= window.localStorage.getItem('updateid');
+        $.post(OL_Action_Root+'/api/reviewers/findById',{_id:id},function(res){
+            if(res.msg==='success') {
+                $('#userID').val(res.data[0].userID);
+                $('#userName').val(res.data[0].userName);
+                $('#chairman').val(res.data[0].chairman);
+                $('#performanceTeam').val(res.data[0].performanceTeam);
+                $('#leadership').val(res.data[0].leadership);
+            } else {
+                layer.msg('很遗憾，找不到您要的数据!',{icon:1,time:1000});
+            }
+        })
+    }
+	
+    //修改教师信息操作
+    function updateReviewer(){
+        var reviewerInfo = {
+            _id:window.localStorage.getItem('updateid'),
+            userID: $('#userID').val(),
+            userName: $('#userName').val(),
+            chairman: $('#chairman').val(), 
+            performanceTeam: $('#performanceTeam').val(), 
+            leadership: $('#leadership').val(),  
+        }
+        $.post(OL_Action_Root+"/api/reviewers/updateReviewer",reviewerInfo,function(res){
+            if (res.msg==='success') {
+                parent.layer.msg('修改成功!',{icon:1,time:1000,end:parent.$('.btn-success').click()});
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(index);
+            }else{
+            	alert(res.msg)
+            }
+        })
+         
+        
+
+    }
+    $('#addbtn').on('click',updateReviewer)
+});
+
+</script>
+</body>
+</html>

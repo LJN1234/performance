@@ -39,7 +39,10 @@ export default new Router({
                 {
                     path: 'performanceList',
                     name: 'performanceList',
-                    component: PerformanceList
+                    component: PerformanceList,
+                    meta: {
+                        isLogin: true
+                    },
                 },
             ]
         },
@@ -54,12 +57,18 @@ export default new Router({
                 {
                     path: 'reviewList',
                     name: 'reviewList',
-                    component: ReviewList
+                    component: ReviewList,
+                    meta: {
+                        isLogin: true
+                    },
                 },
                 {
                     path: 'performanceDetails',
                     name: 'performanceDetails',
-                    component: PerformanceDetails
+                    component: PerformanceDetails,
+                    meta: {
+                        isLogin: true
+                    },
                 }
             ]
         },
@@ -78,19 +87,28 @@ export default new Router({
                 {
                     path: 'personalInfo',
                     name: 'personalInfo',
-                    component: PersonalInfo
+                    component: PersonalInfo,
+                    meta: {
+                        isLogin: true
+                    }
                 },
                 {
                     path: 'retrievePass',
                     name: 'retrievePass',
-                    component: RetrievePass
+                    component: RetrievePass,
+                    meta: {
+                        isLogin: true
+                    },
                 }
             ]
         },
         {
             path: '/retrievePass',
             name: 'retrievePass',
-            component: RetrievePass
+            component: RetrievePass,
+            meta: {
+                isLogin: false
+            }
         }
     ]
 })

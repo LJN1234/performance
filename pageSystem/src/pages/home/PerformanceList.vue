@@ -143,7 +143,7 @@ import {UUID} from '../../utils/IdUtils';
                 insertData.performanceID = this.performance.sel.id;
                 insertData.belongsUser = user.userName;
                 insertData.belongsDepartment = user.department;
-                insertData.typeCode = this. getTypeCode(this.titleName)*1;
+                insertData.typeCode = this.$route.query.navId*1;
                 insertData.typeName = this.performance.sel.typeName;
                 insertData.content = this.performance.sel.content;
                 insertData.workload = this.performance.sel.workload*1;

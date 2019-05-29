@@ -27,16 +27,25 @@
                 <el-table-column label="小计" width="100">
                     <template slot-scope="scope"><span style="margin-left: 10px">{{ scope.row.subtotal }}</span></template>
                 </el-table-column>
+                <el-table-column label="审核状态" width="180">
+                    <template slot-scope="scope">
+                        <span v-if="roleTitle === '教研室主任审核'" style="margin-left: 10px">{{ scope.row.directorAudit }}</span>
+                        <span v-if="roleTitle === '绩效小组审核'" style="margin-left: 10px">{{ scope.row.performanceAudit }}</span>
+                        <span v-if="roleTitle === '领导审核'" style="margin-left: 10px">{{ scope.row.leaderAudit }}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column label="操作" width="180">
                     <template slot-scope="scope">
-                        <el-button size="mini" type="primary" @click="handleResult(scope.row,'已通过审核')">同意</el-button>
-                        <el-popover placement="bottom" :v-model="visible" width="320" title="请写下你不同意的理由：" >
-                            <el-input type="textarea" autosize placeholder="请输入内容" v-model="textarea"></el-input>
-                            <div style="text-align: right; margin: 0">
-                                <el-button type="primary" size="mini" @click="handleResult(scope.row,'未通过审核')">确定</el-button>
-                            </div>
-                            <el-button size="mini" type="danger" slot="reference">不同意</el-button>
-                        </el-popover>
+                        <el-button size="mini" type="primary" @click="handleResult(scope,'已通过审核')">同意</el-button>
+                            <el-popover trigger="click"  :ref="`popover-${scope.$index}`"  placement="bottom" width="270" >
+                                <p>请写下您不同意的理由：</p>
+                                <el-input type="textarea" placeholder="请输入内容" autosize v-model="inputContent"></el-input>
+                                <div style="text-align: right; margin: 0">
+                                        <el-button size="mini" type="text" @click="no(scope)">取消</el-button>
+                                        <el-button type="primary" size="mini" @click="handleResult(scope,'未通过审核')">确定</el-button>
+                                </div>
+                                <el-button  slot="reference" size="mini" type="danger">不同意</el-button>
+                            </el-popover>
                     </template>
                 </el-table-column>
             </el-table>
@@ -49,16 +58,21 @@ export default {
     name: "PerformanceDetails",
     data() {
         return {
+            roleTitle: '',
+            visible: false,
             userName: '',
-            visible2: false,
             userInfo: [],
             summation:0,
-            visible: false,
             tableData: [],
-            textarea: '',
+            inputContent: '',
+
         };
     },
     methods: {
+        no(scope){
+            this.$message('取消操作');
+            scope._self.$refs[`popover-${scope.$index}`].doClose()
+        },
         // 获取教师详细信息
         getUserInfo(userName) {
             this.$axios.get("/myapi/api/userInfo/findByName?t="+ (new Date()).getTime().toString(),
@@ -85,29 +99,38 @@ export default {
                 });
             })
         },
-        handleResult(row,result) {
+        handleResult(scope,result) {
             if(result === '未通过审核') {
-                result = this.textarea;
+                result = this.inputContent;
             }
-            this.$axios.post("/myapi/api/performanceData/chageAuditStatus?t="+ (new Date()).getTime().toString(),
-            {role:this.$route.query.roleTitle,performanceID:row.performanceID,result:result})
-            .then(data => {
-                console.log(data)
-                if(data.data.msg === "success") {
-                    this.$message.success('审核完成！');
-                    this.getPerformance();
-                } else {
-                    this.$message.error('审核失败，请重试！');
-                }
-            })
+            if(result) {
+                this.$axios.post("/myapi/api/performanceData/chageAuditStatus?t="+ (new Date()).getTime().toString(),
+                {role:this.$route.query.roleTitle,performanceID:scope.row.performanceID,result:result})
+                .then(data => {
+                    if(data.data.msg === "success") {
+                        this.$message.success('审核完成！');
+                        this.visible = false;
+                        this.$message({message:"审核完成",type: 'success'});
+                        scope._self.$refs[`popover-${scope.$index}`].doClose()
+                        this.getPerformance();
+                    } else {
+                        this.visible = false;
+                        this.$message.error('审核失败，请重试！');
+                    }
+                })
+            } else {
+                this.$message.error('请先填写不同意的理由！');
+            }
         },
     },
     watch: {
         $route(to, from) {
             this.userName = this.$route.query.userName; 
+            this.roleTitle = this.$route.query.roleTitle;
         } 
     },
     created() {
+        this.roleTitle = this.$route.query.roleTitle;
         this.getUserInfo(this.$route.query.userName);
         this.getPerformance();
     }
